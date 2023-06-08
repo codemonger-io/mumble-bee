@@ -5,6 +5,10 @@ import { Amplify } from 'aws-amplify'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
+import Buefy from 'buefy'
+import 'buefy/dist/buefy.css'
+import '@mdi/font/css/materialdesignicons.min.css'
+
 import App from './App.vue'
 import router from './router'
 
@@ -19,6 +23,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(Buefy)
 
 app.provide('mumbleApi', mumbleApi)
 
