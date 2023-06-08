@@ -19,7 +19,9 @@
     "@aws-sdk/client-s3": "^3.345.0",
     "@aws-sdk/credential-providers": "^3.345.0",
     "@aws-sdk/types": "^3.342.0",
+    "@mdi/font": "^7.2.96",
     "aws-amplify": "^5.2.3",
+    "buefy": "github:kikuomax/buefy#v0.9.21-vue3-2",
     "pinia": "^2.0.36",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0"
