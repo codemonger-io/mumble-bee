@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Upload } from 'buefy'
 import { ref, watch } from 'vue'
 
 import type { Attachment } from '@/types/attachment'
@@ -13,16 +14,20 @@ const emit = defineEmits<{
 }>()
 
 const file = ref<File | undefined>()
-watch(file, file => {
-  if (file != null) {
+watch(file, _file => {
+  if (_file != null) {
     if (process.env.NODE_ENV !== 'production') {
-      console.log('[PostEditorControls]', 'selected attachment', file.name)
+      console.log('[PostEditorControls]', 'selected attachment', _file.name)
     }
-    emit('attachment-added', file)
+    emit('attachment-added', _file)
     // waits for another file
     file.value = undefined
+  } else {
+    // workaround: forces to clear the file input
+    fileChooser.value?.clearInput()
   }
 })
+const fileChooser = ref<Upload | undefined>()
 
 const getAttachmentIcon = (state: AttachmentState) => {
   switch (state) {
@@ -57,7 +62,7 @@ const getAttachmentType = (state: AttachmentState) => {
     <div class="level">
       <div class="level-left">
         <b-field class="file is-info">
-          <b-upload v-model="file" class="file-label">
+          <b-upload ref="fileChooser" v-model="file" class="file-label">
             <span class="file-cta">
               <b-icon class="file-icon is-icon-only" icon="paperclip"></b-icon>
             </span>
