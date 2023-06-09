@@ -29,11 +29,18 @@ const credentialsProvider = computed<Provider<Credentials | undefined>>(() => {
 })
 
 const content = ref<string>('')
+const trimmedContent = computed(() => content.value.trim())
 const attachments = reactive([] as Attachment[])
+const allAttachmentsUploaded = computed(() => {
+  return attachments.every(a => a.state === 'uploaded')
+})
 
 const onSubmit = () => {
   console.log('[PostEditor]', 'submitting', content.value)
 }
+const isSubmittable = computed(() => {
+  return trimmedContent.value.length > 0 && allAttachmentsUploaded.value
+})
 
 const uploadAttachment = async (
   file: File,
@@ -172,6 +179,7 @@ const onAttachmentDeleted = (attachment: Attachment) => {
     </b-field>
     <PostEditorControls
       :attachments="attachments"
+      :is-submittable="isSubmittable"
       @attachment-added="onAttachmentAdded"
       @attachment-deleted="onAttachmentDeleted"
     />

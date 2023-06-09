@@ -5,6 +5,7 @@ import type { Attachment } from '@/types/attachment'
 
 const props = defineProps<{
   attachments: Attachment[],
+  isSubmittable: boolean,
 }>()
 const emit = defineEmits<{
   (e: 'attachment-added', file: File): void
@@ -64,7 +65,12 @@ const getAttachmentType = (state: AttachmentState) => {
         </b-field>
       </div>
       <div class="level-right">
-        <input type="submit" class="button is-primary" value="Mumble">
+        <input
+          type="submit"
+          class="button is-primary"
+          value="Mumble"
+          :disabled="!isSubmittable"
+        >
       </div>
     </div>
   </div>
