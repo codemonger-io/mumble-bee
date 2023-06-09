@@ -10,6 +10,9 @@ export interface Attachment {
   /** Name of the file. */
   readonly filename: string
 
+  /** MIME type of the file. */
+  readonly mimeType: string
+
   /** State of the attachment. */
   state: AttachmentState
 
@@ -52,6 +55,7 @@ export function createAttachment(file: File): Attachment {
   return {
     id,
     filename: file.name,
+    mimeType: file.type,
     state: 'uploading',
   }
 }
