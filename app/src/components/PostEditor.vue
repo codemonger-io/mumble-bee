@@ -9,6 +9,7 @@ import {
 } from '@aws-sdk/client-s3'
 import type { Credentials, Provider } from '@aws-sdk/types'
 
+import apiConfig from '@/configs/api-config'
 import authConfig from '@/configs/auth-config'
 import { createCredentialsProvider } from '@/lib/credentials-provider'
 import { useCurrentUser } from '@/stores/current-user'
@@ -50,18 +51,26 @@ const uploadAttachment = async (
     credentials,
   })
   try {
+    const objectKey = `media/users/${username}/${id}`
     const res = await client.send(
       new PutObjectCommand({
         Bucket: bucketName,
-        Key: `media/users/${username}/${id}`,
+        Key: objectKey,
         Body: file,
         ContentType: file.type,
       }),
     )
+    const uploaded = attachments.find(a => a.id === id)
+    uploaded!.state = 'uploaded'
+    uploaded!.url = `${apiConfig.baseUrl}/${objectKey}`
     if (process.env.NODE_ENV !== 'production') {
-      console.log('[PostEditor]', 'finished uploading attachment', file, res)
+      console.log(
+        '[PostEditor]',
+        'finished uploading attachment',
+        uploaded,
+        res,
+      )
     }
-    attachments.find(a => a.id === id)!.state = 'uploaded'
   } catch (err) {
     if (err.toString().startsWith('NotAuthorizedException:')) {
       if (process.env.NODE_ENV !== 'production') {
@@ -99,10 +108,11 @@ const deleteAttachment = async (
     region: authConfig.region,
     credentials,
   })
+  const objectKey = `media/users/${username}/${id}`
   const res = await client.send(
     new DeleteObjectCommand({
       Bucket: bucketName,
-      Key: `media/users/${username}/${id}`,
+      Key: objectKey,
     }),
   )
   if (process.env.NODE_ENV !== 'production') {

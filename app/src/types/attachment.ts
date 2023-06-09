@@ -12,6 +12,15 @@ export interface Attachment {
 
   /** State of the attachment. */
   state: AttachmentState
+
+  /**
+   * URL of the attachment.
+   *
+   * @remarks
+   *
+   * This has to be set after the attachment has been uploaded.
+   */
+  url?: string
 }
 
 /**
