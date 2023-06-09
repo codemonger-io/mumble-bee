@@ -1,6 +1,6 @@
 import type { CognitoUser } from 'amazon-cognito-identity-js'
 import { defineStore } from 'pinia'
-import { inject, ref, watch } from 'vue'
+import { inject, ref, shallowRef, watch } from 'vue'
 
 import type { MumbleApi } from '@/lib/mumble-api'
 import type { UserConfig } from '@/types/user-config'
@@ -20,7 +20,7 @@ import type { UserConfig } from '@/types/user-config'
 export const useCurrentUser = defineStore('current-user', () => {
   const mumbleApi: MumbleApi = inject('mumbleApi')
 
-  const user = ref<CognitoUser | undefined>()
+  const user = shallowRef<CognitoUser | undefined>()
 
   const userConfig = ref<UserConfig | undefined>()
   watch(user, async user => {
