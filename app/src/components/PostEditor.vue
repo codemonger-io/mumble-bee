@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
 
 import { Auth } from 'aws-amplify'
 import {
@@ -11,15 +11,20 @@ import type { Credentials, Provider } from '@aws-sdk/types'
 
 import apiConfig from '@/configs/api-config'
 import authConfig from '@/configs/auth-config'
+import { ACTIVITY_STREAMS_PUBLIC_ADDRESS } from '@/lib/activity-streams'
 import { createCredentialsProvider } from '@/lib/credentials-provider'
+import type { MumbleApi } from '@/lib/mumble-api'
 import { useCurrentUser } from '@/stores/current-user'
 import type { Attachment } from '@/types/attachment'
 import { createAttachment } from '@/types/attachment'
+import type { MumblePost } from '@/types/mumble-post'
 
 import PostEditorControls from './PostEditorControls.vue'
 
+const mumbleApi: MumbleApi = inject('mumbleApi')
+
 const currentUser = useCurrentUser()
-const credentialsProvider = computed<Provider<Credentials | undefined>>(() => {
+const credentialsProvider = computed<Provider<Credentials> | undefined>(() => {
   const user = currentUser.user
   if (user != null) {
     return createCredentialsProvider(user)
@@ -36,7 +41,36 @@ const allAttachmentsUploaded = computed(() => {
 })
 
 const onSubmit = () => {
-  console.log('[PostEditor]', 'submitting', content.value)
+  const content = trimmedContent.value
+  if (content.length === 0 || !allAttachmentsUploaded.value) {
+    return
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(
+      '[PostEditor]',
+      'submitting',
+      content,
+      attachments,
+    )
+  }
+  const user = currentUser.user
+  if (user == null) {
+    return
+  }
+  const post: MumblePost = {
+    type: 'Note',
+    content,
+    to: [ACTIVITY_STREAMS_PUBLIC_ADDRESS],
+    cc: [`${apiConfig.baseUrl}/users/${user.getUsername()}/followers`],
+  }
+  if (attachments.length > 0) {
+    post['attachment'] = attachments.map(a => ({
+      type: 'Image',
+      mediaType: a.mimeType,
+      url: a.url,
+    }))
+  }
+  mumbleApi.submitPost(user, post)
 }
 const isSubmittable = computed(() => {
   return trimmedContent.value.length > 0 && allAttachmentsUploaded.value
