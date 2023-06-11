@@ -81,7 +81,7 @@ const getAttachmentType = (state: AttachmentState) => {
   </div>
   <div class="attachments">
     <h3>{{ attachments.length > 0 ? 'Attachments' : 'No attachments' }}</h3>
-    <b-taglist>
+    <b-taglist v-if="attachments.length > 0">
       <b-tag
         v-for="attachment in attachments"
         :key="attachment.id"
