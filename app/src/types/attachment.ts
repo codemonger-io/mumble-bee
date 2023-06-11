@@ -45,7 +45,7 @@ export type AttachmentState = 'uploading' | 'uploaded' | 'deleting'
  * @beta
  */
 export function createAttachment(file: File): Attachment {
-  const uniquePart = crypto.randomUUID().toString('hex')
+  const uniquePart = crypto.randomUUID()
   const extIndex = file.name.lastIndexOf('.')
   const ext = extIndex !== -1 ? file.name.substring(extIndex) : ''
   const id = uniquePart + ext
