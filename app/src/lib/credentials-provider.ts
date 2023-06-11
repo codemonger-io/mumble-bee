@@ -12,12 +12,19 @@ import authConfig from '@/configs/auth-config'
  * You can specify a returned value to `credentials` property of an AWS
  * service client.
  *
+ * @throws Error
+ *
+ *   If `user` has no active session.
+ *
  * @beta
  */
 export function createCredentialsProvider(
   user: CognitoUser,
 ): Provider<Credentials> {
   const session = user.getSignInUserSession()
+  if (session == null) {
+    throw new Error('no active session')
+  }
   const jwtToken = session.getIdToken().getJwtToken()
   const { identityPoolId, region, userPoolId } = authConfig
   const providerName = `cognito-idp.${region}.amazonaws.com/${userPoolId}`

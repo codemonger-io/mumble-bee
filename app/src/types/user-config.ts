@@ -21,7 +21,10 @@ export function isUserConfig(value: unknown): value is UserConfig {
   if (typeof value !== 'object' || value == null) {
     return false
   }
-  if (typeof value.objectsBucketName !== 'string') {
+  if (
+    !('objectsBucketName' in value) ||
+    typeof value.objectsBucketName !== 'string'
+  ) {
     return false
   }
   return true

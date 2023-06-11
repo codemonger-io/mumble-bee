@@ -18,7 +18,7 @@ import type { UserConfig } from '@/types/user-config'
  * @beta
  */
 export const useCurrentUser = defineStore('current-user', () => {
-  const mumbleApi: MumbleApi = inject('mumbleApi')
+  const mumbleApi: MumbleApi = inject('mumbleApi')!
 
   const user = shallowRef<CognitoUser | undefined>()
 

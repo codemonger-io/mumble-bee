@@ -2,7 +2,7 @@
 import type { Upload } from 'buefy'
 import { ref, watch } from 'vue'
 
-import type { Attachment } from '@/types/attachment'
+import type { Attachment, AttachmentState } from '@/types/attachment'
 
 const props = defineProps<{
   attachments: Attachment[],

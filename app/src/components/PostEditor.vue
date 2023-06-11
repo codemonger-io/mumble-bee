@@ -21,7 +21,7 @@ import type { MumblePost } from '@/types/mumble-post'
 
 import PostEditorControls from './PostEditorControls.vue'
 
-const mumbleApi: MumbleApi = inject('mumbleApi')
+const mumbleApi: MumbleApi = inject('mumbleApi')!
 
 const currentUser = useCurrentUser()
 const credentialsProvider = computed<Provider<Credentials> | undefined>(() => {
@@ -67,7 +67,7 @@ const onSubmit = () => {
     post['attachment'] = attachments.map(a => ({
       type: 'Image',
       mediaType: a.mimeType,
-      url: a.url,
+      url: a.url!,
     }))
   }
   mumbleApi.submitPost(user, post)
@@ -113,7 +113,11 @@ const uploadAttachment = async (
       )
     }
   } catch (err) {
-    if (err.toString().startsWith('NotAuthorizedException:')) {
+    if (
+      typeof err === 'object' &&
+      err != null &&
+      err.toString().startsWith('NotAuthorizedException:')
+    ) {
       if (process.env.NODE_ENV !== 'production') {
         console.log('[PostEditor]', 'refreshing credentials')
       }
@@ -165,7 +169,7 @@ const deleteAttachment = async (
   }
 }
 
-const attachmentQueue = reactive([])
+const attachmentQueue = reactive<File[]>([])
 watch(
   [
     attachmentQueue,
@@ -174,7 +178,7 @@ watch(
   ],
   ([queue, bucketName, credentials]) => {
     if (queue.length > 0 && bucketName != null && credentials != null) {
-      const file = queue.pop()
+      const file = queue.pop()!
       uploadAttachment(file, bucketName, credentials)
     }
   },
