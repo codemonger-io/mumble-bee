@@ -17,7 +17,7 @@ import type { MumbleApi } from '@/lib/mumble-api'
 import { useCurrentUser } from '@/stores/current-user'
 import type { Attachment } from '@/types/attachment'
 import { createAttachment } from '@/types/attachment'
-import type { MumblePost } from '@/types/mumble-post'
+import type { NewPost } from '@/types/post'
 
 import PostEditorControls from './PostEditorControls.vue'
 
@@ -57,7 +57,7 @@ const onSubmit = () => {
   if (user == null) {
     return
   }
-  const post: MumblePost = {
+  const post: NewPost = {
     type: 'Note',
     content,
     to: [ACTIVITY_STREAMS_PUBLIC_ADDRESS],

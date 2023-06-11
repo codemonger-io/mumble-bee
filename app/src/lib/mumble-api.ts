@@ -2,8 +2,7 @@ import type { CognitoUser } from 'amazon-cognito-identity-js'
 
 import apiConfig from '@/configs/api-config'
 import { ACTIVITY_STREAMS_MIME_TYPE } from './activity-streams'
-import type { MumblePost } from '@/types/mumble-post'
-import type { Post } from '@/types/post'
+import type { NewPost, Post } from '@/types/post'
 import { isPost } from '@/types/post'
 import type { UserConfig } from '@/types/user-config'
 import { isUserConfig } from '@/types/user-config'
@@ -28,7 +27,7 @@ export interface MumbleApi {
   getUserConfig(user: CognitoUser): Promise<UserConfig>
 
   /** Submits a given post from a specified user. */
-  submitPost(user: CognitoUser, post: MumblePost): Promise<void>
+  submitPost(user: CognitoUser, post: NewPost): Promise<void>
 
   /** Returns the outbox collection. */
   getOutbox(user: CognitoUser): Promise<OrderedCollection>
@@ -113,7 +112,7 @@ export class MumbleApiImpl implements MumbleApi {
     return data
   }
 
-  async submitPost(user: CognitoUser, post: MumblePost): Promise<void> {
+  async submitPost(user: CognitoUser, post: NewPost): Promise<void> {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[MumbleApiImpl]', 'submitting post:', user, post)
     }
