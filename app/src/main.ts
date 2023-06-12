@@ -5,7 +5,7 @@ import { Amplify } from 'aws-amplify'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import Buefy from 'buefy'
+import BuefyAdapter from './buefy-adapter'
 import 'buefy/dist/buefy.css'
 import '@mdi/font/css/materialdesignicons.min.css'
 
@@ -23,7 +23,7 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(Buefy)
+app.use(BuefyAdapter)
 
 app.provide('mumbleApi', mumbleApi)
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Upload } from 'buefy'
 import { ref, watch } from 'vue'
 
 import type { Attachment, AttachmentState } from '@/types/attachment'
@@ -27,7 +26,7 @@ watch(file, _file => {
     fileChooser.value?.clearInput()
   }
 })
-const fileChooser = ref<Upload | undefined>()
+const fileChooser = ref()
 
 const getAttachmentIcon = (state: AttachmentState) => {
   switch (state) {
