@@ -1,16 +1,38 @@
-import * as cdk from 'aws-cdk-lib';
+import type { StackProps } from 'aws-cdk-lib';
+import { CfnOutput, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
-export class CdkStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+import { ContentsDistribution } from './contents-distribution';
+import type { DeploymentStage } from './deployment-stage';
+
+export interface Props extends StackProps {
+  /** Deployment stage. */
+  readonly deploymentStage: DeploymentStage;
+}
+
+export class CdkStack extends Stack {
+  constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const { deploymentStage } = props;
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'CdkQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    const distribution = new ContentsDistribution(
+      this,
+      'ContentsDistribution',
+      {
+        deploymentStage,
+      },
+    );
+
+    // outputs
+    new CfnOutput(this, 'ContentsBucketName', {
+      description: 'Name of the S3 bucket that contains the contents',
+      value: distribution.bucket.bucketName,
+    });
+    new CfnOutput(this, 'ContentsDistributionDomainName', {
+      description:
+        'Domain name of the CloudFront distribution for the contents',
+      value: distribution.distribution.domainName,
+    });
   }
 }
