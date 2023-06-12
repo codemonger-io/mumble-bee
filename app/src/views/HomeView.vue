@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import PostList from '@/components/PostList.vue'
+import { useCurrentUser } from '@/stores/current-user'
+
+const currentUser = useCurrentUser()
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <p>Hello, {{ currentUser.user?.getUsername() }}</p>
+    <PostList />
   </main>
 </template>
