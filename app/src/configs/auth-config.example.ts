@@ -1,3 +1,4 @@
+// Please consider using the `configure` npm script.
 const region = '<REGION>'
 
 const domainPrefix = '<HOSTED_UI_DOMAIN_PREFIX>'
