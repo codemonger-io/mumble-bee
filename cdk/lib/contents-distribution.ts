@@ -1,12 +1,23 @@
 import {
   RemovalPolicy,
+  aws_certificatemanager as acm,
   aws_cloudfront as cloudfront,
   aws_cloudfront_origins as origins,
   aws_s3 as s3,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
+import domainNameConfig from '../configs/domain-name-conf';
+
 import type { DeploymentStage } from './deployment-stage';
+
+/** Configuration of the domain name and certificate for production. */
+interface DomainNameConfig {
+  /** Domain name. */
+  readonly domainName: string;
+  /** ARN of the certificate. */
+  readonly certificateArn: string;
+}
 
 export interface Props {
   /** Deployment stage. */
@@ -37,6 +48,20 @@ export class ContentsDistribution extends Construct {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    let domainNameAndCertificate;
+    if (deploymentStage === 'production') {
+      const config: DomainNameConfig = domainNameConfig;
+      domainNameAndCertificate = {
+        domainNames: [config.domainName],
+        certificate: acm.Certificate.fromCertificateArn(
+          this,
+          'DistributionCertificate',
+          config.certificateArn,
+        ),
+      };
+    } else {
+      domainNameAndCertificate = {};
+    }
     this.distribution = new cloudfront.Distribution(
       this,
       'ContentsDistribution',
@@ -60,6 +85,7 @@ export class ContentsDistribution extends Construct {
         ],
         enableLogging: true,
         enabled: true,
+        ...domainNameAndCertificate,
       },
     );
   }
