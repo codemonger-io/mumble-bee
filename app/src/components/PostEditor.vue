@@ -39,41 +39,51 @@ const attachments = reactive([] as Attachment[])
 const allAttachmentsUploaded = computed(() => {
   return attachments.every(a => a.state === 'uploaded')
 })
+const isSubmitting = ref<boolean>(false)
 
-const onSubmit = () => {
-  const content = trimmedContent.value
-  if (content.length === 0 || !allAttachmentsUploaded.value) {
-    return
+const onSubmit = async () => {
+  isSubmitting.value = true
+  try {
+    const _content = trimmedContent.value
+    if (_content.length === 0 || !allAttachmentsUploaded.value) {
+      return
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(
+        '[PostEditor]',
+        'submitting',
+        _content,
+        attachments,
+      )
+    }
+    const user = currentUser.user
+    if (user == null) {
+      return
+    }
+    const post: NewPost = {
+      type: 'Note',
+      content: _content,
+      to: [ACTIVITY_STREAMS_PUBLIC_ADDRESS],
+      cc: [`${apiConfig.baseUrl}/users/${user.getUsername()}/followers`],
+    }
+    if (attachments.length > 0) {
+      post['attachment'] = attachments.map(a => ({
+        type: 'Image',
+        mediaType: a.mimeType,
+        url: a.url!,
+      }))
+    }
+    await mumbleApi.submitPost(user, post)
+    content.value = ''
+    attachments.splice(0, attachments.length)
+  } finally {
+    isSubmitting.value = false
   }
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(
-      '[PostEditor]',
-      'submitting',
-      content,
-      attachments,
-    )
-  }
-  const user = currentUser.user
-  if (user == null) {
-    return
-  }
-  const post: NewPost = {
-    type: 'Note',
-    content,
-    to: [ACTIVITY_STREAMS_PUBLIC_ADDRESS],
-    cc: [`${apiConfig.baseUrl}/users/${user.getUsername()}/followers`],
-  }
-  if (attachments.length > 0) {
-    post['attachment'] = attachments.map(a => ({
-      type: 'Image',
-      mediaType: a.mimeType,
-      url: a.url!,
-    }))
-  }
-  mumbleApi.submitPost(user, post)
 }
 const isSubmittable = computed(() => {
-  return trimmedContent.value.length > 0 && allAttachmentsUploaded.value
+  return trimmedContent.value.length > 0
+    && allAttachmentsUploaded.value
+    && !isSubmitting.value
 })
 
 const uploadAttachment = async (
@@ -211,7 +221,7 @@ const onAttachmentDeleted = (attachment: Attachment) => {
         type="textarea"
         v-model="content"
         placeholder="What are you going to mumble?"
-        @keyup.enter.shift="onSubmit"
+        @keyup.enter.shift.prevent="onSubmit"
       >
       </b-input>
     </b-field>
