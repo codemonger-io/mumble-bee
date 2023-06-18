@@ -23,7 +23,16 @@ const signIn = () => {
   <div v-else-if="authenticator.authStatus === 'configuring'">
     <p>Checking the session...</p>
   </div>
-  <div v-else>
-    <a @click="signIn()">Sign In</a>
+  <div v-else class="sign-in-container">
+    <a class="button is-primary" @click="signIn()">Sign In</a>
   </div>
 </template>
+
+<style scoped>
+.sign-in-container {
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  width: 100%;
+}
+</style>

@@ -7,7 +7,14 @@ const currentUser = useCurrentUser()
 
 <template>
   <main>
-    <p>Hello, {{ currentUser.user?.getUsername() }}</p>
+    <p class="greeting">Hello, {{ currentUser.user?.getUsername() }}</p>
     <PostList />
   </main>
 </template>
+
+<style scoped>
+.greeting {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+</style>

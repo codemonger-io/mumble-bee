@@ -21,6 +21,7 @@ import RecentPosts from './RecentPosts.vue'
   place-items: center;
   justify-content: flex-start;
   max-width: 30rem;
+  margin-top: 1rem;
 
   .post-editor,
   .recent-posts {
