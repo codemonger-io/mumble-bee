@@ -129,3 +129,15 @@ Please take the following steps to uppload your application to the S3 bucket pro
     ```sh
     aws s3 cp ../app/dist/ s3://$CONTENTS_BUCKET_NAME/ --recursive
     ```
+
+### Accessing the uploaded application
+
+The application uploaded to the S3 bucket is delivered via the CloudFront distribution provisioned by this CDK stack.
+The CDK stack outputs the domain name of the distribution as `ContentsDistributionDomainName`.
+You can obtain the domain name with the following command:
+
+```sh
+aws cloudformation describe-stacks --stack-name mumble-bee-$DEPLOYMENT_STAGE --query "Stacks[0].Outputs[?OutputKey=='ContentsDistributionDomainName']|[0].OutputValue" --output text
+```
+
+You may also [assign your own domain name to the distribution for production](#preparing-configuration-file).
