@@ -5,8 +5,7 @@ import HostedUiAuthenticator from '@/components/HostedUiAuthenticator.vue'
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.png" width="125" height="125" />
-    <h1 class="title is-1 mumble-title">MumbleBee</h1>
+    <img alt="MumbleBee" class="logo" src="@/assets/logo.png" width="300" />
   </header>
 
   <HostedUiAuthenticator>
