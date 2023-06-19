@@ -16,7 +16,7 @@ The UI/UX is subject to change.
 
 ![Screenshot](./screenshot.png)
 
-### MumbleBee is not
+### MumbleBee is NOT
 
 - A hosted service
     - You have to deploy your own MumbleBee configuration.
@@ -30,7 +30,7 @@ Please refer to the [`app` folder](./app) for how to build it.
 
 ## Serving MumbleBee on AWS
 
-There is a [AWS Cloud Development Kit (CDK)](https://aws.amazon.com/cdk/) stack that provisions AWS resources for contents delivery.
+There is an [AWS Cloud Development Kit (CDK)](https://aws.amazon.com/cdk/) stack that provisions AWS resources for contents delivery.
 Please refer to the [`cdk` folder](./cdk) for how to deploy it.
 
 ## License
