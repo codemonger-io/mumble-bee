@@ -26,8 +26,24 @@ export interface MumbleApi {
   /** Returns the configuration for a given user. */
   getUserConfig(user: CognitoUser): Promise<UserConfig>
 
-  /** Submits a given post from a specified user. */
-  submitPost(user: CognitoUser, post: NewPost): Promise<void>
+  /**
+   * Submits a given post from a specified user.
+   *
+   * @remarks
+   *
+   * If the request fails with an unauthorized (401) error,
+   * calls `refreshSession` and retries with a returned user.
+   * This behavior does not recur.
+   *
+   * @throws Error
+   *
+   *   If the request fails.
+   */
+  submitPost(
+    user: CognitoUser,
+    post: NewPost,
+    refreshSession: () => Promise<CognitoUser | null>,
+  ): Promise<void>
 
   /** Returns the outbox collection. */
   getOutbox(user: CognitoUser): Promise<OrderedCollection>
@@ -112,7 +128,11 @@ export class MumbleApiImpl implements MumbleApi {
     return data
   }
 
-  async submitPost(user: CognitoUser, post: NewPost): Promise<void> {
+  async submitPost(
+    user: CognitoUser,
+    post: NewPost,
+    refreshSession: () => Promise<CognitoUser | null>,
+  ): Promise<void> {
     if (process.env.NODE_ENV !== 'production') {
       console.log('[MumbleApiImpl]', 'submitting post:', user, post)
     }
@@ -130,6 +150,21 @@ export class MumbleApiImpl implements MumbleApi {
       },
       body: JSON.stringify(post),
     })
+    if (!res.ok) {
+      // retries if the request fails with an unauthorized (401) error
+      if (res.status === 401) {
+        const user2 = await refreshSession()
+        if (user2 != null) {
+          await this.submitPost(user2, post, () => Promise.resolve(null))
+        } else {
+          throw new Error(`session expired: ${res.status} ${res.statusText}`)
+        }
+      } else {
+        throw new Error(
+          `failed to submit post: ${res.status} ${res.statusText}`,
+        )
+      }
+    }
   }
 
   async getOutbox(user: CognitoUser): Promise<OrderedCollection> {
