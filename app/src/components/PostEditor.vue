@@ -73,7 +73,7 @@ const onSubmit = async () => {
         url: a.url!,
       }))
     }
-    await mumbleApi.submitPost(user, post)
+    await mumbleApi.submitPost(user, post, () => currentUser.refreshSession())
     content.value = ''
     attachments.splice(0, attachments.length)
   } finally {
