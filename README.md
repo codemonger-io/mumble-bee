@@ -1,8 +1,8 @@
 # MumbleBee
 
 MumbleBee is an official client of [Mumble](https://github.com/codemonger-io/mumble).
-[Mumble](https://github.com/codemonger-io/mumble) is an implementation of [Activity Pub](https://activitypub.rocks/).
-[Activity Pub](https://activitypub.rocks/) is a protocol for decentralized social networking, which [Mastodon](https://joinmastodon.org) also adopts.
+[Mumble](https://github.com/codemonger-io/mumble) is an implementation of [ActivityPub](https://activitypub.rocks/).
+[ActivityPub](https://activitypub.rocks/) is a protocol for decentralized social networking, which [Mastodon](https://joinmastodon.org) also adopts.
 
 ![MumbleBee Brand](./mumble-bee-brand.png)
 
@@ -20,7 +20,7 @@ The UI/UX is subject to change.
 
 - A hosted service
     - You have to deploy your own MumbleBee configuration.
-- A general purpose [Activity Pub](https://activitypub.rocks/) client
+- A general purpose [ActivityPub](https://activitypub.rocks/) client
     - MumbleBee is dedicated to [Mumble](https://github.com/codemonger-io/mumble).
 
 ## Building MumbleBee
