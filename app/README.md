@@ -35,6 +35,7 @@ Please refer to the [Mumble CDK documentation](https://github.com/codemonger-io/
 ### Generating configuration files
 
 If you have deployed and configured the Mumble server following the instructions in the [Mumble CDK documentation](https://github.com/codemonger-io/mumble/blob/main/cdk/README.md), you can generate the configuration files with the [`configure` npm script](./scripts/configure.ts).
+You have to set the [`AWS_PROFILE` environment](../cdk/README.md#setting-aws_profile) variable before running the script.
 
 For development:
 
@@ -52,6 +53,7 @@ npm run configure -- production
 
 You have to make sure the configuration files are properly configured before building for production.
 There is a helper npm script `build:release` to make sure the configuration files are auto-generated before building for production.
+You have to set the [`AWS_PROFILE` environment](../cdk/README.md#setting-aws_profile) variable before running the script.
 
 ```sh
 npm run build:release
