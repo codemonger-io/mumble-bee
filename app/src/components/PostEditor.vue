@@ -2,6 +2,8 @@
 import { computed, inject, reactive, ref, watch } from 'vue'
 
 import { Auth } from 'aws-amplify'
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -23,6 +25,8 @@ import PostEditorControls from './PostEditorControls.vue'
 
 const mumbleApi: MumbleApi = inject('mumbleApi')!
 
+const currentTab = ref(0)
+
 const currentUser = useCurrentUser()
 const credentialsProvider = computed<Provider<Credentials> | undefined>(() => {
   const user = currentUser.user
@@ -41,18 +45,29 @@ const allAttachmentsUploaded = computed(() => {
 })
 const isSubmitting = ref<boolean>(false)
 
+// parses the content as Markdown
+const htmlContent = computed<string>(() => {
+  return marked(trimmedContent.value, {
+    headerIds: false,
+    mangle: false,
+  })
+})
+const safeHtmlContent = computed<string>(() => {
+  return DOMPurify.sanitize(htmlContent.value)
+})
+
 const onSubmit = async () => {
   isSubmitting.value = true
   try {
-    const _content = trimmedContent.value
-    if (_content.length === 0 || !allAttachmentsUploaded.value) {
+    const content_ = trimmedContent.value
+    if (content_.length === 0 || !allAttachmentsUploaded.value) {
       return
     }
     if (process.env.NODE_ENV !== 'production') {
       console.log(
         '[PostEditor]',
         'submitting',
-        _content,
+        content_,
         attachments,
       )
     }
@@ -62,7 +77,11 @@ const onSubmit = async () => {
     }
     const post: NewPost = {
       type: 'Note',
-      content: _content,
+      content: htmlContent.value,
+      source: {
+        content: content_,
+        mediaType: 'text/markdown',
+      },
       to: [ACTIVITY_STREAMS_PUBLIC_ADDRESS],
       cc: [`${apiConfig.baseUrl}/users/${user.getUsername()}/followers`],
     }
@@ -216,15 +235,29 @@ const onAttachmentDeleted = (attachment: Attachment) => {
 
 <template>
   <form @submit.prevent="onSubmit">
-    <b-field label="What are you going to mumble?">
-      <b-input
-        type="textarea"
-        v-model="content"
-        placeholder="What are you going to mumble?"
-        @keyup.enter.shift.prevent="onSubmit"
-      >
-      </b-input>
-    </b-field>
+    <b-tabs v-model="currentTab">
+      <b-tab-item label="Edit">
+        <b-field label="What are you going to mumble?">
+          <b-input
+            type="textarea"
+            v-model.lazy="content"
+            placeholder="What are you going to mumble?"
+          >
+          </b-input>
+        </b-field>
+      </b-tab-item>
+      <b-tab-item label="Preview">
+        <div
+          v-if="safeHtmlContent.length > 0"
+          class="content markdown-content"
+          v-html="safeHtmlContent"
+        >
+        </div>
+        <div v-else>
+          <p>No contents.</p>
+        </div>
+      </b-tab-item>
+    </b-tabs>
     <PostEditorControls
       :attachments="attachments"
       :is-submittable="isSubmittable"

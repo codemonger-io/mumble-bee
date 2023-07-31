@@ -1,0 +1,48 @@
+/* adds my preference to Bulma's content style */
+.content {
+  & .markdown-content,
+  &.markdown-content {
+    & code {
+      color: inherit;
+    }
+
+    & ul {
+      list-style-position: inside;
+      list-style-type: disc;
+
+      & ul {
+        list-style-type: square;
+
+        & ul {
+          list-style-type: circle;
+
+          & ul {
+            list-style-type: "\25AB";
+          }
+        }
+      }
+    }
+
+    & ol {
+      list-style-position: inside;
+
+      & ol {
+        list-style-type: lower-alpha;
+
+        & ol {
+          list-style-type: lower-roman;
+
+          & ol {
+            list-style-type: decimal;
+          }
+        }
+      }
+    }
+
+    & table {
+      & th {
+        font-weight: 600;
+      }
+    }
+  }
+}
