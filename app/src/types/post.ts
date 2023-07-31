@@ -16,6 +16,9 @@ export interface Post {
   /** Content of the post. */
   content: string
 
+  /** Source of the post. */
+  source?: PostSource
+
   /** "to". */
   to: string[]
 
@@ -24,6 +27,19 @@ export interface Post {
 
   /** Optional attachments. */
   attachment?: AttachmentLink[]
+}
+
+/**
+ * Source of a post.
+ *
+ * @beta
+ */
+export interface PostSource {
+  /** Content of the source. */
+  content: string
+
+  /** MIME-type of the source content. */
+  mediaType: string
 }
 
 /**
