@@ -24,6 +24,8 @@
     "@mdi/font": "^7.2.96",
     "aws-amplify": "^5.2.3",
     "buefy": "github:kikuomax/buefy#v0.9.21-vue3-2",
+    "dompurify": "^3.0.5",
+    "marked": "^5.1.2",
     "pinia": "^2.0.36",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0"
@@ -34,7 +36,9 @@
     "@aws-sdk/shared-ini-file-loader": "^3.347.0",
     "@rushstack/eslint-patch": "^1.2.0",
     "@tsconfig/node18": "^2.0.1",
+    "@types/dompurify": "^3.0.2",
     "@types/jsdom": "^21.1.1",
+    "@types/marked": "^5.0.1",
     "@types/node": "^18.16.8",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
