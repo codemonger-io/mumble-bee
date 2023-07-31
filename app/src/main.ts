@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './assets/markdown.css'
 
 import { Amplify } from 'aws-amplify'
 
